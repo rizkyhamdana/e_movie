@@ -5,6 +5,26 @@ class Constant {
 
   static String getCity = 'geo/1.0/direct?';
   static String getForecast = 'data/2.5/forecast?';
+  static String getMoviePopular = 'movie/popular';
+  static String getMovieNowPlaying = 'movie/now_playing';
+  static String getMovieTopRated = 'movie/top_rated';
+  static String getMovieUpcoming = 'movie/upcoming';
+
+  static String getTvPopular = 'tv/popular';
+  static String getTvAiring = 'tv/airing_today';
+  static String getTvTopRated = 'tv/top_rated';
+  static String getTvOnTheAir = 'tv/on_the_air';
+
+  //Type List
+  static const String MOVPOPULAR = 'MOVIE POPULAR';
+  static const String MOVNOWPLAYING = 'MOVIE NOW PLAYING';
+  static const String MOVTOPRATED = 'MOVIE TOP RATED';
+  static const String MOVUPCOMING = 'MOVIE UPCOMING';
+
+  static const String TVAIRING = 'TV AIRING';
+  static const String TVONTHEAIR = 'TV ON THE AIR';
+  static const String TVTOPRATED = 'TV TOP RATED';
+  static const String TVPOPULAR = 'TV POPULAR';
 
   //TYPE REST API
   static const String get = 'GET';

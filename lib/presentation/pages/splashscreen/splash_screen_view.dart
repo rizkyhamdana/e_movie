@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:e_movie/config/route/app_route.gr.dart';
 import 'package:e_movie/config/util/app_theme.dart';
-import 'package:e_movie/config/util/preferences.dart';
 
 @RoutePage()
 class SplashScreenPage extends StatefulWidget {
@@ -19,19 +18,9 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
   @override
   void initState() {
     super.initState();
-    Prefs.getFistLaunch.then(
-      (value) {
-        if (value) {
-          Timer(const Duration(seconds: 3), () {
-            context.router.replace(const OnboardingPage());
-          });
-        } else {
-          Timer(const Duration(seconds: 3), () {
-            context.router.replace(const HomePage());
-          });
-        }
-      },
-    );
+    Timer(const Duration(seconds: 3), () {
+      context.router.replace(const HomePage());
+    });
   }
 
   @override

@@ -9,7 +9,6 @@ class AppRouter extends $AppRouter {
         //HomeScreen is generated as HomeRoute because
         //of the replaceInRouteName property
         AutoRoute(page: SplashRoutePage.page, initial: true),
-        AutoRoute(page: OnboardingPage.page),
         AutoRoute(page: HomePage.page),
         AutoRoute(page: HomeDetailsPage.page),
       ];
