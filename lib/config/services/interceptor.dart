@@ -11,6 +11,7 @@ class AppInterceptors extends InterceptorsWrapper {
   @override
   Future onRequest(
       RequestOptions options, RequestInterceptorHandler handler) async {
+    options.headers['Authorization'] = "Bearer ${AppConfig.token}";
     return super.onRequest(options, handler);
   }
 

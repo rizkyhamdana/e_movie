@@ -9,8 +9,6 @@
 // coverage:ignore-file
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:get_it/get_it.dart' as _i1;
-import 'package:injectable/injectable.dart' as _i2;
 import 'package:e_movie/config/helper/api_helper.dart' as _i3;
 import 'package:e_movie/config/services/call_api_service.dart' as _i6;
 import 'package:e_movie/data/repository/app_repository_impl.dart' as _i5;
@@ -19,6 +17,8 @@ import 'package:e_movie/domain/repository/app_repository.dart' as _i4;
 import 'package:e_movie/presentation/pages/home/home_cubit.dart' as _i8;
 import 'package:e_movie/presentation/pages/onboarding/onboarding_cubit.dart'
     as _i9;
+import 'package:get_it/get_it.dart' as _i1;
+import 'package:injectable/injectable.dart' as _i2;
 
 // ignore_for_file: unnecessary_lambdas
 // ignore_for_file: lines_longer_than_80_chars

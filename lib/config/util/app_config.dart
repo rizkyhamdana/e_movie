@@ -8,8 +8,9 @@ class AppConfig extends InheritedWidget {
     required Widget child,
   }) : super(child: child);
 
-  static String currentUrl = 'https://api.openweathermap.org/';
-  static String apiKey = 'bd3df9d559dd5069b0a7ca1a1312e97a';
+  static String currentUrl = 'https://api.themoviedb.org/3/';
+  static String token =
+      'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI1MjAwOTMwNzA1ZTk1YmUxODVlMmViNWUzMjczYjUyYSIsInN1YiI6IjYwODY3YjQ5NTMyYWNiMDA3N2VlODkzOSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.K-8jjtV3muYN6bxUVH1Q0oWInIDS5q_7sn1TfE9pF9I';
 
   static late bool isDebug;
 

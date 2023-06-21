@@ -5,8 +5,10 @@ class AppTheme {
 
   static const blackShadow = Color.fromRGBO(225, 224, 225, 1.0);
   static const Color blackColor = Color(0xFF383838);
+  static const Color bgColor = Color(0xFF1F282B);
+  static const Color bgColor2 = Color(0xFF121518);
   static const Color blackColor2 = Color(0xFF797979);
-  static const Color blue1 = Color(0xFF3677EA);
+  static const Color blue1 = Color(0xFF0296E5);
   static const Color blue2 = Color(0xFF689FFF);
   static const Color white = Color(0xFFFFFFFF);
 
