@@ -112,7 +112,7 @@ class _MoviePageState extends State<MoviePage>
                       color: AppTheme.white,
                       onPressed: () {
                         _focusNode.unfocus();
-                        cubit.getListMovie(Constant.MOVPOPULAR);
+
                         if (_searchController.text != '') {}
                       },
                     ),
@@ -346,7 +346,7 @@ class _MoviePageState extends State<MoviePage>
         itemCount: 9,
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 3,
-          mainAxisSpacing: 16.0,
+          mainAxisSpacing: 16,
           crossAxisSpacing: 0,
         ),
         itemBuilder: (BuildContext context, int index) {

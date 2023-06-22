@@ -15,6 +15,7 @@ import 'package:e_movie/data/repository/app_repository_impl.dart' as _i5;
 import 'package:e_movie/domain/entities/global.dart' as _i7;
 import 'package:e_movie/domain/repository/app_repository.dart' as _i4;
 import 'package:e_movie/presentation/pages/movie/movie_cubit.dart' as _i8;
+import 'package:e_movie/presentation/pages/tv_show/tv_show_cubit.dart' as _i9;
 import 'package:get_it/get_it.dart' as _i1;
 import 'package:injectable/injectable.dart' as _i2;
 
@@ -36,5 +37,6 @@ _i1.GetIt init(
   gh.lazySingleton<_i6.CallApiService>(() => _i6.CallApiService());
   gh.lazySingleton<_i7.Global>(() => _i7.Global());
   gh.lazySingleton<_i8.MovieCubit>(() => _i8.MovieCubit());
+  gh.lazySingleton<_i9.TvShowCubit>(() => _i9.TvShowCubit());
   return getIt;
 }

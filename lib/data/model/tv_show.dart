@@ -79,7 +79,7 @@ class TvShow {
     overview = json["overview"];
     popularity = json["popularity"];
     posterPath = json["poster_path"];
-    voteAverage = json["vote_average"];
+    // voteAverage = json["vote_average"];
     voteCount = json["vote_count"];
   }
 
