@@ -44,4 +44,18 @@ class TvShowCubit extends Cubit<TvShowState> {
       emit(ListTvShowError(error: Utility.handleErrorString(e.toString())));
     }
   }
+
+  void searchTvShow(String query) async {
+    try {
+      emit(TvShowSearchLoading());
+      var response = await appRepository.getListSearchTvShow(query);
+      if (response.results!.isEmpty) {
+        emit(TvShowSearchEmpty());
+      } else {
+        emit(TvShowSearchLoaded(tvShowResponse: response));
+      }
+    } catch (e) {
+      emit(TvShowSearchError(error: Utility.handleErrorString(e.toString())));
+    }
+  }
 }

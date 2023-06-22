@@ -13,11 +13,18 @@ class TvShowInitial extends TvShowState {}
 
 class TvShowLoading extends TvShowState {}
 
+class TvShowSearchLoading extends TvShowState {}
+
 class ListTvShowLoading extends TvShowState {}
 
 class TvShowLoaded extends TvShowState {
   final TvShowResponse tvShowResponse;
   const TvShowLoaded({required this.tvShowResponse});
+}
+
+class TvShowSearchLoaded extends TvShowState {
+  final TvShowResponse tvShowResponse;
+  const TvShowSearchLoaded({required this.tvShowResponse});
 }
 
 class ListTvShowLoaded extends TvShowState {
@@ -27,11 +34,18 @@ class ListTvShowLoaded extends TvShowState {
 
 class TvShowEmpty extends TvShowState {}
 
+class TvShowSearchEmpty extends TvShowState {}
+
 class ListTvShowEmpty extends TvShowState {}
 
 class TvShowError extends TvShowState {
   final String error;
   const TvShowError({required this.error});
+}
+
+class TvShowSearchError extends TvShowState {
+  final String error;
+  const TvShowSearchError({required this.error});
 }
 
 class ListTvShowError extends TvShowState {

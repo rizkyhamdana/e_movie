@@ -1,8 +1,10 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:e_movie/config/util/custom_widget.dart';
 import 'package:e_movie/data/model/movie.dart';
 import 'package:e_movie/presentation/pages/movie/movie_state.dart';
+import 'package:e_movie/presentation/widget/empty_data.dart';
 import 'package:e_movie/presentation/widget/stroke_text.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shimmer/shimmer.dart';
@@ -84,6 +86,13 @@ class _MoviePageState extends State<MoviePage>
                         },
                         onChanged: (value) {
                           setState(() {});
+                          if (isSearch && value == "") {
+                            setState(() {
+                              isSearch = false;
+                              _searchController.clear();
+                              cubit.getTopListMovie();
+                            });
+                          }
                         },
                         decoration: InputDecoration(
                           hintText: 'Search movie here...',
@@ -158,6 +167,13 @@ class _MoviePageState extends State<MoviePage>
                     topMovieList = state.movieResponse.results!;
                   });
                 } else if (state is MovieError) {
+                  AwesomeDialog(
+                    context: context,
+                    dialogType: DialogType.error,
+                    animType: AnimType.rightSlide,
+                    title: 'Error',
+                    desc: state.error,
+                  ).show();
                   cubit.getListMovie(Constant.MOVNOWPLAYING);
                   debugPrint('ERRORNYA: ${state.error}');
                 } else if (state is MovieEmpty) {
@@ -246,6 +262,17 @@ class _MoviePageState extends State<MoviePage>
                 debugPrint('State Sekarang: $state');
                 if (state is MovieSearchLoaded) {
                   return listMovieLoaded(state.movieResponse.results);
+                } else if (state is MovieSearchEmpty) {
+                  return const EmptyDataView();
+                } else if (state is MovieSearchError) {
+                  AwesomeDialog(
+                    context: context,
+                    dialogType: DialogType.error,
+                    animType: AnimType.rightSlide,
+                    title: 'Error',
+                    desc: state.error,
+                  ).show();
+                  return listMovieLoading();
                 } else {
                   return listMovieLoading();
                 }
@@ -263,7 +290,7 @@ class _MoviePageState extends State<MoviePage>
       baseColor: Colors.black12,
       highlightColor: AppTheme.white,
       child: SizedBox(
-        height: 200,
+        height: (MediaQuery.of(context).size.width - 48) / 3 * 1.6,
         child: ListView.builder(
           physics: const NeverScrollableScrollPhysics(),
           scrollDirection: Axis.horizontal,
@@ -272,7 +299,7 @@ class _MoviePageState extends State<MoviePage>
           itemBuilder: (BuildContext context, int index) {
             return Container(
               margin: const EdgeInsets.symmetric(horizontal: 8),
-              width: 160,
+              width: (MediaQuery.of(context).size.width - 48) / 3,
               child: Stack(
                 children: [
                   Positioned(
@@ -295,22 +322,23 @@ class _MoviePageState extends State<MoviePage>
 
   Widget topMovieLoaded(List<Movie>? listMovie) {
     return SizedBox(
-      height: 200,
+      height: (MediaQuery.of(context).size.width - 48) / 3 * 1.6,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: 5,
         padding: const EdgeInsets.only(left: 24, right: 24),
         itemBuilder: (BuildContext context, int index) {
           return SizedBox(
-            width: 160,
+            width: (MediaQuery.of(context).size.width - 48) / 3,
             child: Stack(
               children: [
                 Positioned(
                     top: 0,
                     right: 0,
                     child: SizedBox(
-                      width: 160,
-                      height: 180,
+                      width: (MediaQuery.of(context).size.width - 48) / 3,
+                      height:
+                          (MediaQuery.of(context).size.width - 48) / 3 * 1.4,
                       child: CachedNetworkImage(
                         imageUrl:
                             imageNetworkPaths(listMovie![index].posterPath!),
@@ -354,9 +382,8 @@ class _MoviePageState extends State<MoviePage>
         shrinkWrap: true,
         itemCount: listMovie!.length,
         padding: EdgeInsets.zero,
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          childAspectRatio: 1,
-          mainAxisExtent: 200,
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          mainAxisExtent: (MediaQuery.of(context).size.width - 32) / 3 * 1.6,
           crossAxisCount: 3,
           mainAxisSpacing: 24.0,
           crossAxisSpacing: 16,
@@ -387,6 +414,7 @@ class _MoviePageState extends State<MoviePage>
                   );
                 },
               ),
+              verticalSpacing(4),
               Text(
                 listMovie[index].title!,
                 maxLines: 2,
@@ -414,10 +442,10 @@ class _MoviePageState extends State<MoviePage>
           physics: const NeverScrollableScrollPhysics(),
           padding: EdgeInsets.zero,
           itemCount: 9,
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 3,
             mainAxisSpacing: 24,
-            mainAxisExtent: 200,
+            mainAxisExtent: (MediaQuery.of(context).size.width - 32) / 3 * 1.6,
             crossAxisSpacing: 16,
           ),
           itemBuilder: (BuildContext context, int index) {
@@ -427,6 +455,7 @@ class _MoviePageState extends State<MoviePage>
                   height: 160,
                   color: AppTheme.blue1,
                 ),
+                verticalSpacing(4),
                 Text(
                   'This is Shimmer Text',
                   maxLines: 2,

@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:e_movie/config/services/injection.dart';
 import 'package:e_movie/config/util/app_theme.dart';
@@ -7,10 +8,12 @@ import 'package:e_movie/config/util/custom_widget.dart';
 import 'package:e_movie/data/model/tv_show.dart';
 import 'package:e_movie/presentation/pages/tv_show/tv_show_cubit.dart';
 import 'package:e_movie/presentation/pages/tv_show/tv_show_state.dart';
+import 'package:e_movie/presentation/widget/empty_data.dart';
 import 'package:e_movie/presentation/widget/spacing.dart';
 import 'package:e_movie/presentation/widget/stroke_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lottie/lottie.dart';
 import 'package:shimmer/shimmer.dart';
 
 @RoutePage()
@@ -75,9 +78,21 @@ class _TvShowPageState extends State<TvShowPage>
                         controller: _searchController,
                         textInputAction: TextInputAction.search,
                         cursorColor: AppTheme.blue1,
-                        onSubmitted: (value) {},
+                        onSubmitted: (value) {
+                          setState(() {
+                            isSearch = true;
+                            cubit.searchTvShow(value);
+                          });
+                        },
                         onChanged: (value) {
                           setState(() {});
+                          if (isSearch && value == "") {
+                            setState(() {
+                              isSearch = false;
+
+                              cubit.getTopListTvShow();
+                            });
+                          }
                         },
                         decoration: InputDecoration(
                           hintText: 'Search tv show here...',
@@ -91,7 +106,9 @@ class _TvShowPageState extends State<TvShowPage>
                                   ),
                                   onPressed: () {
                                     setState(() {
+                                      isSearch = false;
                                       _searchController.clear();
+                                      cubit.getTopListTvShow();
                                     });
                                   },
                                 )
@@ -114,6 +131,10 @@ class _TvShowPageState extends State<TvShowPage>
                       onPressed: () {
                         _focusNode.unfocus();
                         if (_searchController.text != '') {}
+                        setState(() {
+                          isSearch = true;
+                          cubit.searchTvShow(_searchController.text);
+                        });
                       },
                     ),
                   ),
@@ -121,7 +142,7 @@ class _TvShowPageState extends State<TvShowPage>
               ),
             ),
             verticalSpacing(32),
-            Expanded(child: isSearch ? Container() : bodyView()),
+            Expanded(child: isSearch ? bodySearchView() : bodyView()),
           ],
         ),
       ),
@@ -149,8 +170,8 @@ class _TvShowPageState extends State<TvShowPage>
                 }
               },
               child: isTopTvLoading
-                  ? topMovieListLoading()
-                  : topMovieLoaded(topTvShowist)),
+                  ? topTvShowListLoading()
+                  : topTvShowLoaded(topTvShowist)),
           verticalSpacing(32),
           Container(
             width: double.infinity,
@@ -205,9 +226,9 @@ class _TvShowPageState extends State<TvShowPage>
               builder: (context, state) {
                 debugPrint('State Sekarang: $state');
                 if (state is ListTvShowLoaded) {
-                  return listMovieLoaded(state.tvShowResponse.results);
+                  return listTvShowLoaded(state.tvShowResponse.results);
                 } else {
-                  return listMovieLoading();
+                  return listTvShowLoading();
                 }
               },
             ),
@@ -218,12 +239,47 @@ class _TvShowPageState extends State<TvShowPage>
     );
   }
 
-  Widget topMovieListLoading() {
+  Widget bodySearchView() {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.only(bottom: 80),
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: BlocBuilder<TvShowCubit, TvShowState>(
+              builder: (context, state) {
+                debugPrint('State Sekarang: $state');
+                if (state is TvShowSearchLoaded) {
+                  return listTvShowLoaded(state.tvShowResponse.results);
+                } else if (state is TvShowSearchEmpty) {
+                  return const EmptyDataView();
+                } else if (state is TvShowSearchError) {
+                  AwesomeDialog(
+                    context: context,
+                    dialogType: DialogType.error,
+                    animType: AnimType.rightSlide,
+                    title: 'Error',
+                    desc: state.error,
+                  ).show();
+                  return listTvShowLoading();
+                } else {
+                  return listTvShowLoading();
+                }
+              },
+            ),
+          ),
+          verticalSpacing(),
+        ],
+      ),
+    );
+  }
+
+  Widget topTvShowListLoading() {
     return Shimmer.fromColors(
       baseColor: Colors.black12,
       highlightColor: AppTheme.white,
       child: SizedBox(
-        height: 200,
+        height: (MediaQuery.of(context).size.width - 48) / 3 * 1.6,
         child: ListView.builder(
           physics: const NeverScrollableScrollPhysics(),
           scrollDirection: Axis.horizontal,
@@ -232,7 +288,7 @@ class _TvShowPageState extends State<TvShowPage>
           itemBuilder: (BuildContext context, int index) {
             return Container(
               margin: const EdgeInsets.symmetric(horizontal: 8),
-              width: 160,
+              width: (MediaQuery.of(context).size.width - 48) / 3,
               child: Stack(
                 children: [
                   Positioned(
@@ -253,27 +309,28 @@ class _TvShowPageState extends State<TvShowPage>
     );
   }
 
-  Widget topMovieLoaded(List<TvShow>? listMovie) {
+  Widget topTvShowLoaded(List<TvShow>? listTvShow) {
     return SizedBox(
-      height: 200,
+      height: (MediaQuery.of(context).size.width - 48) / 3 * 1.6,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: 5,
         padding: const EdgeInsets.only(left: 24, right: 24),
         itemBuilder: (BuildContext context, int index) {
           return SizedBox(
-            width: 160,
+            width: (MediaQuery.of(context).size.width - 48) / 3,
             child: Stack(
               children: [
                 Positioned(
                     top: 0,
                     right: 0,
                     child: SizedBox(
-                      width: 160,
-                      height: 180,
+                      width: (MediaQuery.of(context).size.width - 48) / 3,
+                      height:
+                          (MediaQuery.of(context).size.width - 48) / 3 * 1.4,
                       child: CachedNetworkImage(
                         imageUrl:
-                            imageNetworkPaths(listMovie![index].posterPath!),
+                            imageNetworkPaths(listTvShow![index].posterPath!),
                         placeholder: (context, url) {
                           return Shimmer.fromColors(
                             baseColor: Colors.black12,
@@ -306,57 +363,101 @@ class _TvShowPageState extends State<TvShowPage>
     );
   }
 
-  Widget listMovieLoaded(List<TvShow>? listMovie) {
-    return GridView.builder(
-      physics: const NeverScrollableScrollPhysics(),
-      shrinkWrap: true,
-      itemCount: listMovie!.length,
-      padding: EdgeInsets.zero,
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 3,
-        mainAxisSpacing: 16.0,
-        crossAxisSpacing: 0,
-      ),
-      itemBuilder: (BuildContext context, int index) {
-        return CachedNetworkImage(
-          imageUrl: imageNetworkPaths(listMovie[index].posterPath!),
-          placeholder: (context, url) {
-            return Shimmer.fromColors(
-              baseColor: Colors.black12,
-              highlightColor: AppTheme.white,
-              child: Container(
-                width: 160,
-                height: 180,
-                margin: const EdgeInsets.symmetric(horizontal: 20),
-                color: AppTheme.blue1,
+  Widget listTvShowLoaded(List<TvShow>? listTvShow) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24),
+      child: GridView.builder(
+        physics: const NeverScrollableScrollPhysics(),
+        shrinkWrap: true,
+        itemCount: listTvShow!.length,
+        padding: EdgeInsets.zero,
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          mainAxisExtent: (MediaQuery.of(context).size.width - 32) / 3 * 1.6,
+          crossAxisCount: 3,
+          mainAxisSpacing: 24.0,
+          crossAxisSpacing: 16,
+        ),
+        itemBuilder: (BuildContext context, int index) {
+          return Column(
+            children: [
+              CachedNetworkImage(
+                imageUrl: imageNetworkPaths(listTvShow[index].posterPath ?? ''),
+                fit: BoxFit.fitWidth,
+                errorWidget: (context, url, error) {
+                  return Container(
+                    height: 160,
+                    decoration: BoxDecoration(
+                        image: DecorationImage(
+                            image:
+                                AssetImage(imagePaths('movie_placeholder')))),
+                  );
+                },
+                placeholder: (context, url) {
+                  return Shimmer.fromColors(
+                    baseColor: Colors.black12,
+                    highlightColor: AppTheme.white,
+                    child: Container(
+                      width: 160,
+                      color: AppTheme.blue1,
+                    ),
+                  );
+                },
               ),
-            );
-          },
-        );
-      },
+              verticalSpacing(4),
+              Text(
+                listTvShow[index].name!,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
+                style: AppTheme.body3(
+                  color: AppTheme.white,
+                ),
+              ),
+            ],
+          );
+        },
+      ),
     );
   }
 
-  Widget listMovieLoading() {
-    return Shimmer.fromColors(
-      baseColor: Colors.black12,
-      highlightColor: AppTheme.white,
-      child: GridView.builder(
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        padding: EdgeInsets.zero,
-        itemCount: 9,
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 3,
-          mainAxisSpacing: 16,
-          crossAxisSpacing: 0,
+  Widget listTvShowLoading() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24),
+      child: Shimmer.fromColors(
+        baseColor: Colors.black12,
+        highlightColor: AppTheme.white,
+        child: GridView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          padding: EdgeInsets.zero,
+          itemCount: 9,
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 3,
+            mainAxisSpacing: 24,
+            mainAxisExtent: (MediaQuery.of(context).size.width - 32) / 3 * 1.6,
+            crossAxisSpacing: 16,
+          ),
+          itemBuilder: (BuildContext context, int index) {
+            return Column(
+              children: [
+                Container(
+                  height: 160,
+                  color: AppTheme.blue1,
+                ),
+                verticalSpacing(4),
+                Text(
+                  'This is Shimmer Text',
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.center,
+                  style: AppTheme.body3(
+                    color: AppTheme.white,
+                  ),
+                ),
+              ],
+            );
+          },
         ),
-        itemBuilder: (BuildContext context, int index) {
-          return Container(
-            margin: const EdgeInsets.symmetric(horizontal: 20),
-            color: AppTheme.blue1,
-          );
-        },
       ),
     );
   }
