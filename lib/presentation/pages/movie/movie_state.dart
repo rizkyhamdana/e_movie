@@ -13,14 +13,28 @@ class MovieInitial extends MovieState {}
 
 class MovieLoading extends MovieState {}
 
+class ListMovieLoading extends MovieState {}
+
 class MovieLoaded extends MovieState {
   final MovieResponse movieResponse;
   const MovieLoaded({required this.movieResponse});
 }
 
+class ListMovieLoaded extends MovieState {
+  final MovieResponse movieResponse;
+  const ListMovieLoaded({required this.movieResponse});
+}
+
 class MovieEmpty extends MovieState {}
+
+class ListMovieEmpty extends MovieState {}
 
 class MovieError extends MovieState {
   final String error;
   const MovieError({required this.error});
+}
+
+class ListMovieError extends MovieState {
+  final String error;
+  const ListMovieError({required this.error});
 }

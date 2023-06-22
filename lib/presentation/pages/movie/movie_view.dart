@@ -1,9 +1,10 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:e_movie/config/util/custom_widget.dart';
 import 'package:e_movie/data/model/movie.dart';
 import 'package:e_movie/presentation/pages/movie/movie_state.dart';
 import 'package:e_movie/presentation/widget/stroke_text.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get_it/get_it.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:e_movie/config/services/injection.dart';
 import 'package:e_movie/config/util/app_theme.dart';
@@ -20,17 +21,21 @@ class MoviePage extends StatefulWidget {
   State<MoviePage> createState() => _MoviePageState();
 }
 
-class _MoviePageState extends State<MoviePage> {
+class _MoviePageState extends State<MoviePage>
+    with SingleTickerProviderStateMixin {
   final FocusNode _focusNode = FocusNode();
   final TextEditingController _searchController = TextEditingController();
+  late TabController _tabController;
   var cubit = getIt<MovieCubit>();
 
   List<Movie> topMovieList = [];
-
+  bool isTopMovieLoading = true;
+  bool isListMovieLoading = true;
   @override
   void initState() {
     super.initState();
-    cubit.getListMovie(Constant.MOVNOWPLAYING);
+    _tabController = TabController(length: 4, vsync: this);
+    cubit.getTopListMovie();
   }
 
   @override
@@ -42,11 +47,14 @@ class _MoviePageState extends State<MoviePage> {
         width: double.infinity,
         height: double.infinity,
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Movie',
-              style: AppTheme.custom(
-                  size: 24, color: AppTheme.white, weight: FontWeight.bold),
+            Center(
+              child: Text(
+                'Movie',
+                style: AppTheme.custom(
+                    size: 24, color: AppTheme.white, weight: FontWeight.bold),
+              ),
             ),
             verticalSpacing(),
             Padding(
@@ -118,52 +126,86 @@ class _MoviePageState extends State<MoviePage> {
                 padding: const EdgeInsets.only(bottom: 80),
                 child: Column(
                   children: [
-                    BlocBuilder<MovieCubit, MovieState>(
-                      builder: (context, state) {
-                        debugPrint('State Sekarang: $state');
-                        if (state is MovieLoaded) {
-                          return SizedBox(
-                            height: 160,
-                            child: ListView.builder(
-                              scrollDirection: Axis.horizontal,
-                              itemCount: 5,
-                              padding:
-                                  const EdgeInsets.only(left: 16, right: 16),
-                              itemBuilder: (BuildContext context, int index) {
-                                return Container(
-                                  width: 128,
-                                  margin:
-                                      const EdgeInsets.only(left: 8, right: 8),
-                                  child: Stack(
-                                    children: [
-                                      Positioned(
-                                          top: 0,
-                                          right: 0,
-                                          child: Container(
-                                            width: 120,
-                                            height: 150,
-                                            color: AppTheme.blue2,
-                                          )),
-                                      Positioned(
-                                          left: 0,
-                                          bottom: 0,
-                                          child: StrokeText(
-                                              text: '${index + 1}',
-                                              strokeWidth: 1,
-                                              textColor: AppTheme.bgColor,
-                                              strokeColor: AppTheme.blue1,
-                                              fontSize: 80)),
-                                    ],
-                                  ),
-                                );
-                              },
-                            ),
-                          );
-                        } else {
-                          return bodyViewLoading();
-                        }
-                      },
-                    )
+                    BlocListener<MovieCubit, MovieState>(
+                        listener: (context, state) {
+                          if (state is MovieLoaded) {
+                            cubit.getListMovie(Constant.MOVNOWPLAYING);
+                            setState(() {
+                              isTopMovieLoading = false;
+                              topMovieList = state.movieResponse.results!;
+                            });
+                          } else if (state is MovieError) {
+                            cubit.getListMovie(Constant.MOVNOWPLAYING);
+                            debugPrint('ERRORNYA: ${state.error}');
+                          } else if (state is MovieEmpty) {
+                            cubit.getListMovie(Constant.MOVNOWPLAYING);
+                          }
+                        },
+                        child: isTopMovieLoading
+                            ? topMovieListLoading()
+                            : topMovieLoaded(topMovieList)),
+                    verticalSpacing(32),
+                    Container(
+                      width: double.infinity,
+                      decoration: const BoxDecoration(
+                        color: AppTheme.bgColor,
+                        border: Border(
+                          bottom: BorderSide(
+                              color: Colors.transparent,
+                              width: 0), // Remove the bottom border
+                        ),
+                      ),
+                      child: TabBar(
+                        isScrollable: true,
+                        labelStyle: AppTheme.subtitle3(),
+                        unselectedLabelStyle: AppTheme.body3(),
+                        labelColor: AppTheme.white,
+                        unselectedLabelColor: AppTheme.blackColor2,
+                        dividerColor: Colors.transparent,
+                        indicatorColor: AppTheme.white,
+                        padding: const EdgeInsets.symmetric(horizontal: 24),
+                        controller: _tabController,
+                        onTap: (value) {
+                          switch (value) {
+                            case 0:
+                              cubit.getListMovie(Constant.MOVNOWPLAYING);
+                              break;
+                            case 1:
+                              cubit.getListMovie(Constant.MOVUPCOMING);
+                              break;
+                            case 2:
+                              cubit.getListMovie(Constant.MOVTOPRATED);
+                              break;
+                            case 3:
+                              cubit.getListMovie(Constant.MOVPOPULAR);
+                              break;
+                            default:
+                              break;
+                          }
+                        },
+                        tabs: const [
+                          Tab(text: 'Now Playing'),
+                          Tab(text: 'Upcoming'),
+                          Tab(text: 'Top Rated'),
+                          Tab(text: 'Popular'),
+                        ],
+                      ),
+                    ),
+                    verticalSpacing(),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: BlocBuilder<MovieCubit, MovieState>(
+                        builder: (context, state) {
+                          debugPrint('State Sekarang: $state');
+                          if (state is ListMovieLoaded) {
+                            return listMovieLoaded(state.movieResponse.results);
+                          } else {
+                            return listMovieLoading();
+                          }
+                        },
+                      ),
+                    ),
+                    verticalSpacing(),
                   ],
                 ),
               ),
@@ -174,12 +216,12 @@ class _MoviePageState extends State<MoviePage> {
     );
   }
 
-  Widget bodyViewLoading() {
+  Widget topMovieListLoading() {
     return Shimmer.fromColors(
       baseColor: Colors.black12,
       highlightColor: AppTheme.white,
       child: SizedBox(
-        height: 160,
+        height: 200,
         child: ListView.builder(
           physics: const NeverScrollableScrollPhysics(),
           scrollDirection: Axis.horizontal,
@@ -187,24 +229,132 @@ class _MoviePageState extends State<MoviePage> {
           padding: const EdgeInsets.only(left: 16, right: 16),
           itemBuilder: (BuildContext context, int index) {
             return Container(
-              width: 128,
-              height: 160,
-              margin: const EdgeInsets.only(left: 8, right: 8),
+              margin: const EdgeInsets.symmetric(horizontal: 8),
+              width: 160,
               child: Stack(
                 children: [
                   Positioned(
-                      top: 0,
-                      right: 0,
-                      child: Container(
-                        width: 120,
-                        height: 150,
-                        color: AppTheme.blue2,
-                      )),
+                    top: 0,
+                    right: 0,
+                    child: Container(
+                      width: 140,
+                      height: 180,
+                      color: AppTheme.blue1,
+                    ),
+                  ),
                 ],
               ),
             );
           },
         ),
+      ),
+    );
+  }
+
+  Widget topMovieLoaded(List<Movie>? listMovie) {
+    return SizedBox(
+      height: 200,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: 5,
+        padding: const EdgeInsets.only(left: 24, right: 24),
+        itemBuilder: (BuildContext context, int index) {
+          return SizedBox(
+            width: 160,
+            child: Stack(
+              children: [
+                Positioned(
+                    top: 0,
+                    right: 0,
+                    child: SizedBox(
+                      width: 160,
+                      height: 180,
+                      child: CachedNetworkImage(
+                        imageUrl:
+                            imageNetworkPaths(listMovie![index].posterPath!),
+                        placeholder: (context, url) {
+                          return Shimmer.fromColors(
+                            baseColor: Colors.black12,
+                            highlightColor: AppTheme.white,
+                            child: Container(
+                              width: 160,
+                              height: 180,
+                              margin:
+                                  const EdgeInsets.symmetric(horizontal: 20),
+                              color: AppTheme.blue1,
+                            ),
+                          );
+                        },
+                      ),
+                    )),
+                Positioned(
+                    left: 0,
+                    bottom: 0,
+                    child: StrokeText(
+                        text: '${index + 1}',
+                        strokeWidth: 2,
+                        textColor: AppTheme.bgColor,
+                        strokeColor: AppTheme.blue1,
+                        fontSize: 80)),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget listMovieLoaded(List<Movie>? listMovie) {
+    return GridView.builder(
+      physics: const NeverScrollableScrollPhysics(),
+      shrinkWrap: true,
+      itemCount: listMovie!.length,
+      padding: EdgeInsets.zero,
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 3,
+        mainAxisSpacing: 16.0,
+        crossAxisSpacing: 0,
+      ),
+      itemBuilder: (BuildContext context, int index) {
+        return CachedNetworkImage(
+          imageUrl: imageNetworkPaths(listMovie[index].posterPath!),
+          placeholder: (context, url) {
+            return Shimmer.fromColors(
+              baseColor: Colors.black12,
+              highlightColor: AppTheme.white,
+              child: Container(
+                width: 160,
+                height: 180,
+                margin: const EdgeInsets.symmetric(horizontal: 20),
+                color: AppTheme.blue1,
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Widget listMovieLoading() {
+    return Shimmer.fromColors(
+      baseColor: Colors.black12,
+      highlightColor: AppTheme.white,
+      child: GridView.builder(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        padding: EdgeInsets.zero,
+        itemCount: 9,
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 3,
+          mainAxisSpacing: 16.0,
+          crossAxisSpacing: 0,
+        ),
+        itemBuilder: (BuildContext context, int index) {
+          return Container(
+            margin: const EdgeInsets.symmetric(horizontal: 20),
+            color: AppTheme.blue1,
+          );
+        },
       ),
     );
   }

@@ -3,6 +3,8 @@
 class Constant {
   static String appName = 'Weather Forecast App';
 
+  static const String imagePath = 'https://image.tmdb.org/t/p/w500';
+
   static String getCity = 'geo/1.0/direct?';
   static String getForecast = 'data/2.5/forecast?';
   static String getMoviePopular = 'movie/popular';

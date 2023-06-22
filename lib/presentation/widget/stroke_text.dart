@@ -22,13 +22,14 @@ class StrokeText extends StatelessWidget {
     return SizedBox(
       height: 96,
       child: Stack(
+        alignment: Alignment.center,
         children: [
           Text(
             text,
             style: TextStyle(
               fontFamily: AppTheme.fontName,
               fontWeight: FontWeight.bold,
-              fontSize: fontSize + 4,
+              fontSize: fontSize + 2,
               foreground: Paint()
                 ..style = PaintingStyle.stroke
                 ..strokeWidth = strokeWidth
@@ -38,14 +39,10 @@ class StrokeText extends StatelessWidget {
           Text(
             text,
             style: TextStyle(
-              fontFamily: AppTheme.fontName,
-              fontWeight: FontWeight.bold,
-              fontSize: fontSize,
-              foreground: Paint()
-                ..style = PaintingStyle.stroke
-                ..strokeWidth = strokeWidth
-                ..color = textColor,
-            ),
+                fontFamily: AppTheme.fontName,
+                fontWeight: FontWeight.bold,
+                fontSize: fontSize,
+                color: textColor),
           ),
         ],
       ),
