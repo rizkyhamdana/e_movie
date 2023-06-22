@@ -13,6 +13,8 @@ class MovieInitial extends MovieState {}
 
 class MovieLoading extends MovieState {}
 
+class MovieSaved extends MovieState {}
+
 class ListMovieLoading extends MovieState {}
 
 class MovieSearchLoading extends MovieState {}

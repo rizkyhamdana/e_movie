@@ -18,7 +18,7 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
   @override
   void initState() {
     super.initState();
-    Timer(const Duration(seconds: 3), () {
+    Timer(const Duration(seconds: 4), () {
       context.router.replace(const HomePage());
     });
   }
@@ -36,14 +36,14 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
         padding: EdgeInsets.only(
             top: MediaQuery.of(context).padding.top,
             bottom: MediaQuery.of(context).padding.bottom + 24),
-        decoration: const BoxDecoration(color: AppTheme.white),
+        decoration: const BoxDecoration(color: AppTheme.bgColor),
         child: Column(
           children: [
             Expanded(
               child: Center(
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 48.0),
-                  child: Lottie.asset('assets/anim/anim_oob.json',
+                  padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                  child: Lottie.asset('assets/anim/anim_movie.json',
                       width: double.infinity),
                 ),
               ),
@@ -53,7 +53,7 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
               child: Text(
                 'created by rizkyhamdana',
                 textAlign: TextAlign.center,
-                style: AppTheme.subtitle3(color: AppTheme.blackColor),
+                style: AppTheme.subtitle3(color: AppTheme.white),
               ),
             )
           ],

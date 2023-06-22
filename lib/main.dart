@@ -1,3 +1,7 @@
+import 'dart:developer';
+
+import 'package:auto_route/auto_route.dart';
+import 'package:e_movie/config/helper/database_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:e_movie/config/util/app_config.dart';
@@ -5,10 +9,11 @@ import 'package:e_movie/config/util/app_config.dart';
 import 'config/route/app_route.dart';
 import 'config/services/injection.dart';
 
-void main() {
+void main() async {
   configureDependencies();
-
+  // Initialize the dat
   WidgetsFlutterBinding.ensureInitialized();
+  await DatabaseHelper.instance.database;
   AppConfig.isDebug = true;
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
       .then((_) {
@@ -25,9 +30,6 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   final _appRouter = AppRouter();
-
-  // This widget is the root of your application.
-
   @override
   void initState() {
     super.initState();
@@ -38,27 +40,28 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      routerConfig: _appRouter.config(),
+      routerConfig: _appRouter.config(
+        navigatorObservers: () => [MyObserver()],
+      ),
       title: 'Flutter Demo',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a blue toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
     );
   }
+}
+
+class MyObserver extends AutoRouterObserver {
+  @override
+  void didPush(Route route, Route? previousRoute) {
+    log('Route Pushed to: ${route.settings.name ?? 'Dialog'}');
+  }
+
+  @override
+  void didPop(Route<dynamic> route, Route<dynamic>? previousRoute) {
+    log('Route Popped to: ${previousRoute?.settings.name}');
+  }
+
+  // only override to observer tab routes
 }

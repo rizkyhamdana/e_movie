@@ -3,6 +3,12 @@
 class Constant {
   static String appName = 'Weather Forecast App';
 
+  //Database
+  static String dbname = 'movietv.db';
+  static int dbversion = 1; // change version if migration
+  static String movie = 'Movies';
+  static String tvShow = 'Tvshow'; // change version if migration
+
   static const String imagePath = 'https://image.tmdb.org/t/p/w500';
 
   //API PATH

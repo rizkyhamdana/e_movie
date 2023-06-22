@@ -83,6 +83,24 @@ class TvShow {
     voteCount = json["vote_count"];
   }
 
+  factory TvShow.fromDb(Map<String, dynamic> json) => TvShow(
+        id: json["id"],
+        name: json["name"],
+        originalName: json["original_name"],
+        backdropPath: json["backdrop_path"],
+        posterPath: json["poster_path"],
+        firstAirDate: json["first_air_date"],
+      );
+
+  Map<String, dynamic> toDb() => {
+        "id": id,
+        "name": name,
+        "original_name": originalName,
+        "backdrop_path": backdropPath,
+        "poster_path": posterPath,
+        "first_air_date": firstAirDate,
+      };
+
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data["backdrop_path"] = backdropPath;

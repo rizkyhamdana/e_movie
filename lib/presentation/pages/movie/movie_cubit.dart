@@ -1,6 +1,7 @@
 import 'package:e_movie/config/services/injection.dart';
 import 'package:e_movie/config/util/constant.dart';
 import 'package:e_movie/config/util/utility.dart';
+import 'package:e_movie/data/model/movie.dart';
 import 'package:e_movie/domain/repository/app_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
@@ -56,6 +57,16 @@ class MovieCubit extends Cubit<MovieState> {
       }
     } catch (e) {
       emit(MovieSearchError(error: Utility.handleErrorString(e.toString())));
+    }
+  }
+
+  void insertWatchListMovie(Movie movie) async {
+    try {
+      emit(MovieLoading());
+      await appRepository.insertMovie(movie);
+      emit(MovieSaved());
+    } catch (e) {
+      emit(MovieError(error: Utility.handleErrorString(e.toString())));
     }
   }
 }

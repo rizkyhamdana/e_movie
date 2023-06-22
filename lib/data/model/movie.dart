@@ -84,6 +84,24 @@ class Movie {
     voteCount = json["vote_count"];
   }
 
+  factory Movie.fromDb(Map<String, dynamic> json) => Movie(
+        id: json["id"],
+        title: json["title"],
+        originalTitle: json["original_title"],
+        backdropPath: json["backdrop_path"],
+        posterPath: json["poster_path"],
+        releaseDate: json["release_date"],
+      );
+
+  Map<String, dynamic> toDb() => {
+        "id": id,
+        "title": title,
+        "original_title": originalTitle,
+        "backdrop_path": backdropPath,
+        "poster_path": posterPath,
+        "release_date": releaseDate,
+      };
+
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data["adult"] = adult;

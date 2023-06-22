@@ -13,7 +13,6 @@ import 'package:e_movie/presentation/widget/spacing.dart';
 import 'package:e_movie/presentation/widget/stroke_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lottie/lottie.dart';
 import 'package:shimmer/shimmer.dart';
 
 @RoutePage()
@@ -336,10 +335,9 @@ class _TvShowPageState extends State<TvShowPage>
                             baseColor: Colors.black12,
                             highlightColor: AppTheme.white,
                             child: Container(
-                              width: 160,
+                              width:
+                                  (MediaQuery.of(context).size.width - 48) / 3,
                               height: 180,
-                              margin:
-                                  const EdgeInsets.symmetric(horizontal: 20),
                               color: AppTheme.blue1,
                             ),
                           );

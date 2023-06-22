@@ -6,6 +6,7 @@ import 'package:e_movie/presentation/pages/movie/movie_cubit.dart';
 import 'package:e_movie/presentation/pages/movie/movie_view.dart';
 import 'package:e_movie/presentation/pages/tv_show/tv_show_cubit.dart';
 import 'package:e_movie/presentation/pages/tv_show/tv_show_view.dart';
+import 'package:e_movie/presentation/pages/watchlist/watchlist_cubit.dart';
 import 'package:e_movie/presentation/pages/watchlist/watchlist_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -49,6 +50,10 @@ class _HomePageState extends State<HomePage> {
         ),
         BlocProvider(
           create: (context) => getIt<TvShowCubit>(),
+          child: const TvShowPage(),
+        ),
+        BlocProvider(
+          create: (context) => getIt<WatchListCubit>(),
           child: const TvShowPage(),
         ),
       ],

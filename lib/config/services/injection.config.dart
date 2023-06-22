@@ -14,8 +14,12 @@ import 'package:e_movie/config/services/call_api_service.dart' as _i6;
 import 'package:e_movie/data/repository/app_repository_impl.dart' as _i5;
 import 'package:e_movie/domain/entities/global.dart' as _i7;
 import 'package:e_movie/domain/repository/app_repository.dart' as _i4;
+import 'package:e_movie/presentation/pages/movie/detail/movie_detail_cubit.dart'
+    as _i9;
 import 'package:e_movie/presentation/pages/movie/movie_cubit.dart' as _i8;
-import 'package:e_movie/presentation/pages/tv_show/tv_show_cubit.dart' as _i9;
+import 'package:e_movie/presentation/pages/tv_show/tv_show_cubit.dart' as _i10;
+import 'package:e_movie/presentation/pages/watchlist/watchlist_cubit.dart'
+    as _i11;
 import 'package:get_it/get_it.dart' as _i1;
 import 'package:injectable/injectable.dart' as _i2;
 
@@ -37,6 +41,8 @@ _i1.GetIt init(
   gh.lazySingleton<_i6.CallApiService>(() => _i6.CallApiService());
   gh.lazySingleton<_i7.Global>(() => _i7.Global());
   gh.lazySingleton<_i8.MovieCubit>(() => _i8.MovieCubit());
-  gh.lazySingleton<_i9.TvShowCubit>(() => _i9.TvShowCubit());
+  gh.lazySingleton<_i9.MovieDetailCubit>(() => _i9.MovieDetailCubit());
+  gh.lazySingleton<_i10.TvShowCubit>(() => _i10.TvShowCubit());
+  gh.lazySingleton<_i11.WatchListCubit>(() => _i11.WatchListCubit());
   return getIt;
 }

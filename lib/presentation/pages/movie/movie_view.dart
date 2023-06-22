@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:e_movie/config/route/app_route.gr.dart';
 import 'package:e_movie/config/util/custom_widget.dart';
 import 'package:e_movie/data/model/movie.dart';
 import 'package:e_movie/presentation/pages/movie/movie_state.dart';
@@ -202,7 +203,7 @@ class _MoviePageState extends State<MoviePage>
               unselectedLabelColor: AppTheme.blackColor2,
               dividerColor: Colors.transparent,
               indicatorColor: AppTheme.white,
-              padding: const EdgeInsets.symmetric(horizontal: 24),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               controller: _tabController,
               onTap: (value) {
                 switch (value) {
@@ -328,45 +329,59 @@ class _MoviePageState extends State<MoviePage>
         itemCount: 5,
         padding: const EdgeInsets.only(left: 24, right: 24),
         itemBuilder: (BuildContext context, int index) {
-          return SizedBox(
-            width: (MediaQuery.of(context).size.width - 48) / 3,
-            child: Stack(
-              children: [
-                Positioned(
-                    top: 0,
-                    right: 0,
-                    child: SizedBox(
-                      width: (MediaQuery.of(context).size.width - 48) / 3,
-                      height:
-                          (MediaQuery.of(context).size.width - 48) / 3 * 1.4,
-                      child: CachedNetworkImage(
-                        imageUrl:
-                            imageNetworkPaths(listMovie![index].posterPath!),
-                        placeholder: (context, url) {
-                          return Shimmer.fromColors(
-                            baseColor: Colors.black12,
-                            highlightColor: AppTheme.white,
-                            child: Container(
-                              width: 160,
-                              height: 180,
-                              margin:
-                                  const EdgeInsets.symmetric(horizontal: 20),
-                              color: AppTheme.blue1,
-                            ),
-                          );
-                        },
-                      ),
-                    )),
-                Positioned(
-                    left: 0,
-                    bottom: 0,
-                    child: StrokeText(
-                        text: '${index + 1}',
-                        strokeWidth: 2,
-                        textColor: AppTheme.bgColor,
-                        strokeColor: AppTheme.blue1,
-                        fontSize: 80)),
-              ],
+          return InkWell(
+            onTap: () {
+              context.router.push(MovieDetailPage(movie: listMovie[index]));
+            },
+            child: SizedBox(
+              width: (MediaQuery.of(context).size.width - 48) / 3,
+              child: Stack(
+                children: [
+                  Positioned(
+                      top: 0,
+                      right: 0,
+                      child: SizedBox(
+                        width: (MediaQuery.of(context).size.width - 48) / 3,
+                        height:
+                            (MediaQuery.of(context).size.width - 48) / 3 * 1.4,
+                        child: CachedNetworkImage(
+                          imageUrl:
+                              imageNetworkPaths(listMovie![index].posterPath!),
+                          errorWidget: (context, url, error) {
+                            return Container(
+                              height: 160,
+                              decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                      image: AssetImage(
+                                          imagePaths('movie_placeholder')))),
+                            );
+                          },
+                          placeholder: (context, url) {
+                            return Shimmer.fromColors(
+                              baseColor: Colors.black12,
+                              highlightColor: AppTheme.white,
+                              child: Container(
+                                width:
+                                    (MediaQuery.of(context).size.width - 48) /
+                                        3,
+                                height: 180,
+                                color: AppTheme.blue1,
+                              ),
+                            );
+                          },
+                        ),
+                      )),
+                  Positioned(
+                      left: 0,
+                      bottom: 0,
+                      child: StrokeText(
+                          text: '${index + 1}',
+                          strokeWidth: 2,
+                          textColor: AppTheme.bgColor,
+                          strokeColor: AppTheme.blue1,
+                          fontSize: 80)),
+                ],
+              ),
             ),
           );
         },
@@ -376,7 +391,7 @@ class _MoviePageState extends State<MoviePage>
 
   Widget listMovieLoaded(List<Movie>? listMovie) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24),
+      padding: const EdgeInsets.symmetric(horizontal: 16),
       child: GridView.builder(
         physics: const NeverScrollableScrollPhysics(),
         shrinkWrap: true,

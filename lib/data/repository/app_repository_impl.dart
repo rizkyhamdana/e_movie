@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:e_movie/data/database/app_database.dart';
 import 'package:e_movie/data/model/movie.dart';
 import 'package:e_movie/data/model/tv_show.dart';
 import 'package:injectable/injectable.dart';
@@ -105,6 +106,93 @@ class AppRepositoryImpl implements AppRepository {
       );
 
       return tvShowResponseFromJson(jsonEncode(response.data));
+    } on DioException catch (e) {
+      throw Exception(Utility.handleError(e));
+    }
+  }
+
+  @override
+  Future<List<Movie>> getMovieWatchlist() async {
+    try {
+      var listMovie = await AppDatabase.instance.queryAllMovie();
+      return listMovie;
+    } on DioException catch (e) {
+      throw Exception(Utility.handleError(e));
+    }
+  }
+
+  @override
+  Future<List<TvShow>> getTvShowWatchList(String query) async {
+    try {
+      var listTvShow = await AppDatabase.instance.queryAllTvShow();
+      return listTvShow;
+    } on DioException catch (e) {
+      throw Exception(Utility.handleError(e));
+    }
+  }
+
+  @override
+  Future<void> insertMovie(Movie movie) async {
+    try {
+      var result = AppDatabase.instance.insertMovie(movie.toDb());
+      print('RESULTNYAAA: $result');
+    } on DioException catch (e) {
+      throw Exception(Utility.handleError(e));
+    }
+  }
+
+  @override
+  Future<void> insertTvShow(TvShow tvShow) async {
+    try {
+      await AppDatabase.instance.insertTvShow(tvShow.toDb());
+    } on DioException catch (e) {
+      throw Exception(Utility.handleError(e));
+    }
+  }
+
+  @override
+  Future<bool> getMovieById(int id) async {
+    try {
+      var result = await AppDatabase.instance.queryMovieById(id);
+      if (result.isEmpty) {
+        return false;
+      } else {
+        return true;
+      }
+    } on DioException catch (e) {
+      throw Exception(Utility.handleError(e));
+    }
+  }
+
+  @override
+  Future<bool> getTvShowById(int id) async {
+    try {
+      var result = await AppDatabase.instance.queryTvShowById(id);
+      if (result.isEmpty) {
+        return false;
+      } else {
+        return true;
+      }
+    } on DioException catch (e) {
+      throw Exception(Utility.handleError(e));
+    }
+  }
+
+  @override
+  Future<bool> deleteMovie(int id) async {
+    try {
+      await AppDatabase.instance.deleteMovie(id);
+      return true;
+    } on DioException catch (e) {
+      throw Exception(Utility.handleError(e));
+    }
+  }
+
+  @override
+  Future<bool> deleteTvShow(int id) async {
+    try {
+      await AppDatabase.instance.deleteTvShow(id);
+      return true;
     } on DioException catch (e) {
       throw Exception(Utility.handleError(e));
     }
