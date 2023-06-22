@@ -5,17 +5,20 @@ class Constant {
 
   static const String imagePath = 'https://image.tmdb.org/t/p/w500';
 
-  static String getCity = 'geo/1.0/direct?';
-  static String getForecast = 'data/2.5/forecast?';
+  //API PATH
   static String getMoviePopular = 'movie/popular';
   static String getMovieNowPlaying = 'movie/now_playing';
   static String getMovieTopRated = 'movie/top_rated';
   static String getMovieUpcoming = 'movie/upcoming';
 
+  static String getMovieSearch = 'search/movie';
+
   static String getTvPopular = 'tv/popular';
   static String getTvAiring = 'tv/airing_today';
   static String getTvTopRated = 'tv/top_rated';
   static String getTvOnTheAir = 'tv/on_the_air';
+
+  static String getTvSearch = 'search/tv';
 
   //Type List
   static const String MOVPOPULAR = 'MOVIE POPULAR';

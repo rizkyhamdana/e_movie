@@ -44,4 +44,18 @@ class MovieCubit extends Cubit<MovieState> {
       emit(ListMovieError(error: Utility.handleErrorString(e.toString())));
     }
   }
+
+  void searchMovie(String query) async {
+    try {
+      emit(MovieSearchLoading());
+      var response = await appRepository.getListSearchMovie(query);
+      if (response.results!.isEmpty) {
+        emit(MovieSearchEmpty());
+      } else {
+        emit(MovieSearchLoaded(movieResponse: response));
+      }
+    } catch (e) {
+      emit(MovieSearchError(error: Utility.handleErrorString(e.toString())));
+    }
+  }
 }

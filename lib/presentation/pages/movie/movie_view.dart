@@ -30,7 +30,7 @@ class _MoviePageState extends State<MoviePage>
 
   List<Movie> topMovieList = [];
   bool isTopMovieLoading = true;
-  bool isListMovieLoading = true;
+  bool isSearch = false;
   @override
   void initState() {
     super.initState();
@@ -74,7 +74,14 @@ class _MoviePageState extends State<MoviePage>
                         controller: _searchController,
                         textInputAction: TextInputAction.search,
                         cursorColor: AppTheme.blue1,
-                        onSubmitted: (value) {},
+                        onSubmitted: (value) {
+                          if (value != "") {
+                            setState(() {
+                              isSearch = true;
+                              cubit.searchMovie(value);
+                            });
+                          }
+                        },
                         onChanged: (value) {
                           setState(() {});
                         },
@@ -90,7 +97,9 @@ class _MoviePageState extends State<MoviePage>
                                   ),
                                   onPressed: () {
                                     setState(() {
+                                      isSearch = false;
                                       _searchController.clear();
+                                      cubit.getTopListMovie();
                                     });
                                   },
                                 )
@@ -113,7 +122,12 @@ class _MoviePageState extends State<MoviePage>
                       onPressed: () {
                         _focusNode.unfocus();
 
-                        if (_searchController.text != '') {}
+                        if (_searchController.text != '') {
+                          setState(() {
+                            isSearch = true;
+                            cubit.searchMovie(_searchController.text);
+                          });
+                        }
                       },
                     ),
                   ),
@@ -122,96 +136,124 @@ class _MoviePageState extends State<MoviePage>
             ),
             verticalSpacing(32),
             Expanded(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.only(bottom: 80),
-                child: Column(
-                  children: [
-                    BlocListener<MovieCubit, MovieState>(
-                        listener: (context, state) {
-                          if (state is MovieLoaded) {
-                            cubit.getListMovie(Constant.MOVNOWPLAYING);
-                            setState(() {
-                              isTopMovieLoading = false;
-                              topMovieList = state.movieResponse.results!;
-                            });
-                          } else if (state is MovieError) {
-                            cubit.getListMovie(Constant.MOVNOWPLAYING);
-                            debugPrint('ERRORNYA: ${state.error}');
-                          } else if (state is MovieEmpty) {
-                            cubit.getListMovie(Constant.MOVNOWPLAYING);
-                          }
-                        },
-                        child: isTopMovieLoading
-                            ? topMovieListLoading()
-                            : topMovieLoaded(topMovieList)),
-                    verticalSpacing(32),
-                    Container(
-                      width: double.infinity,
-                      decoration: const BoxDecoration(
-                        color: AppTheme.bgColor,
-                        border: Border(
-                          bottom: BorderSide(
-                              color: Colors.transparent,
-                              width: 0), // Remove the bottom border
-                        ),
-                      ),
-                      child: TabBar(
-                        isScrollable: true,
-                        labelStyle: AppTheme.subtitle3(),
-                        unselectedLabelStyle: AppTheme.body3(),
-                        labelColor: AppTheme.white,
-                        unselectedLabelColor: AppTheme.blackColor2,
-                        dividerColor: Colors.transparent,
-                        indicatorColor: AppTheme.white,
-                        padding: const EdgeInsets.symmetric(horizontal: 24),
-                        controller: _tabController,
-                        onTap: (value) {
-                          switch (value) {
-                            case 0:
-                              cubit.getListMovie(Constant.MOVNOWPLAYING);
-                              break;
-                            case 1:
-                              cubit.getListMovie(Constant.MOVUPCOMING);
-                              break;
-                            case 2:
-                              cubit.getListMovie(Constant.MOVTOPRATED);
-                              break;
-                            case 3:
-                              cubit.getListMovie(Constant.MOVPOPULAR);
-                              break;
-                            default:
-                              break;
-                          }
-                        },
-                        tabs: const [
-                          Tab(text: 'Now Playing'),
-                          Tab(text: 'Upcoming'),
-                          Tab(text: 'Top Rated'),
-                          Tab(text: 'Popular'),
-                        ],
-                      ),
-                    ),
-                    verticalSpacing(),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: BlocBuilder<MovieCubit, MovieState>(
-                        builder: (context, state) {
-                          debugPrint('State Sekarang: $state');
-                          if (state is ListMovieLoaded) {
-                            return listMovieLoaded(state.movieResponse.results);
-                          } else {
-                            return listMovieLoading();
-                          }
-                        },
-                      ),
-                    ),
-                    verticalSpacing(),
-                  ],
-                ),
-              ),
+              child: isSearch ? bodySearchView() : bodyView(),
             )
           ],
         ),
+      ),
+    );
+  }
+
+  Widget bodyView() {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.only(bottom: 80),
+      child: Column(
+        children: [
+          BlocListener<MovieCubit, MovieState>(
+              listener: (context, state) {
+                if (state is MovieLoaded) {
+                  cubit.getListMovie(Constant.MOVNOWPLAYING);
+                  setState(() {
+                    isTopMovieLoading = false;
+                    topMovieList = state.movieResponse.results!;
+                  });
+                } else if (state is MovieError) {
+                  cubit.getListMovie(Constant.MOVNOWPLAYING);
+                  debugPrint('ERRORNYA: ${state.error}');
+                } else if (state is MovieEmpty) {
+                  cubit.getListMovie(Constant.MOVNOWPLAYING);
+                }
+              },
+              child: isTopMovieLoading
+                  ? topMovieListLoading()
+                  : topMovieLoaded(topMovieList)),
+          verticalSpacing(32),
+          Container(
+            width: double.infinity,
+            decoration: const BoxDecoration(
+              color: AppTheme.bgColor,
+              border: Border(
+                bottom: BorderSide(
+                    color: Colors.transparent,
+                    width: 0), // Remove the bottom border
+              ),
+            ),
+            child: TabBar(
+              isScrollable: true,
+              labelStyle: AppTheme.subtitle3(),
+              unselectedLabelStyle: AppTheme.body3(),
+              labelColor: AppTheme.white,
+              unselectedLabelColor: AppTheme.blackColor2,
+              dividerColor: Colors.transparent,
+              indicatorColor: AppTheme.white,
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              controller: _tabController,
+              onTap: (value) {
+                switch (value) {
+                  case 0:
+                    cubit.getListMovie(Constant.MOVNOWPLAYING);
+                    break;
+                  case 1:
+                    cubit.getListMovie(Constant.MOVUPCOMING);
+                    break;
+                  case 2:
+                    cubit.getListMovie(Constant.MOVTOPRATED);
+                    break;
+                  case 3:
+                    cubit.getListMovie(Constant.MOVPOPULAR);
+                    break;
+                  default:
+                    break;
+                }
+              },
+              tabs: const [
+                Tab(text: 'Now Playing'),
+                Tab(text: 'Upcoming'),
+                Tab(text: 'Top Rated'),
+                Tab(text: 'Popular'),
+              ],
+            ),
+          ),
+          verticalSpacing(),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: BlocBuilder<MovieCubit, MovieState>(
+              builder: (context, state) {
+                debugPrint('State Sekarang: $state');
+                if (state is ListMovieLoaded) {
+                  return listMovieLoaded(state.movieResponse.results);
+                } else {
+                  return listMovieLoading();
+                }
+              },
+            ),
+          ),
+          verticalSpacing(),
+        ],
+      ),
+    );
+  }
+
+  Widget bodySearchView() {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.only(bottom: 80),
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: BlocBuilder<MovieCubit, MovieState>(
+              builder: (context, state) {
+                debugPrint('State Sekarang: $state');
+                if (state is MovieSearchLoaded) {
+                  return listMovieLoaded(state.movieResponse.results);
+                } else {
+                  return listMovieLoading();
+                }
+              },
+            ),
+          ),
+          verticalSpacing(),
+        ],
       ),
     );
   }
@@ -305,56 +347,99 @@ class _MoviePageState extends State<MoviePage>
   }
 
   Widget listMovieLoaded(List<Movie>? listMovie) {
-    return GridView.builder(
-      physics: const NeverScrollableScrollPhysics(),
-      shrinkWrap: true,
-      itemCount: listMovie!.length,
-      padding: EdgeInsets.zero,
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 3,
-        mainAxisSpacing: 16.0,
-        crossAxisSpacing: 0,
-      ),
-      itemBuilder: (BuildContext context, int index) {
-        return CachedNetworkImage(
-          imageUrl: imageNetworkPaths(listMovie[index].posterPath!),
-          placeholder: (context, url) {
-            return Shimmer.fromColors(
-              baseColor: Colors.black12,
-              highlightColor: AppTheme.white,
-              child: Container(
-                width: 160,
-                height: 180,
-                margin: const EdgeInsets.symmetric(horizontal: 20),
-                color: AppTheme.blue1,
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24),
+      child: GridView.builder(
+        physics: const NeverScrollableScrollPhysics(),
+        shrinkWrap: true,
+        itemCount: listMovie!.length,
+        padding: EdgeInsets.zero,
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          childAspectRatio: 1,
+          mainAxisExtent: 200,
+          crossAxisCount: 3,
+          mainAxisSpacing: 24.0,
+          crossAxisSpacing: 16,
+        ),
+        itemBuilder: (BuildContext context, int index) {
+          return Column(
+            children: [
+              CachedNetworkImage(
+                imageUrl: imageNetworkPaths(listMovie[index].posterPath ?? ''),
+                fit: BoxFit.fitWidth,
+                errorWidget: (context, url, error) {
+                  return Container(
+                    height: 160,
+                    decoration: BoxDecoration(
+                        image: DecorationImage(
+                            image:
+                                AssetImage(imagePaths('movie_placeholder')))),
+                  );
+                },
+                placeholder: (context, url) {
+                  return Shimmer.fromColors(
+                    baseColor: Colors.black12,
+                    highlightColor: AppTheme.white,
+                    child: Container(
+                      height: 160,
+                      color: AppTheme.blue1,
+                    ),
+                  );
+                },
               ),
-            );
-          },
-        );
-      },
+              Text(
+                listMovie[index].title!,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
+                style: AppTheme.body3(
+                  color: AppTheme.white,
+                ),
+              ),
+            ],
+          );
+        },
+      ),
     );
   }
 
   Widget listMovieLoading() {
-    return Shimmer.fromColors(
-      baseColor: Colors.black12,
-      highlightColor: AppTheme.white,
-      child: GridView.builder(
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        padding: EdgeInsets.zero,
-        itemCount: 9,
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 3,
-          mainAxisSpacing: 16,
-          crossAxisSpacing: 0,
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24.0),
+      child: Shimmer.fromColors(
+        baseColor: Colors.black12,
+        highlightColor: AppTheme.white,
+        child: GridView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          padding: EdgeInsets.zero,
+          itemCount: 9,
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 3,
+            mainAxisSpacing: 24,
+            mainAxisExtent: 200,
+            crossAxisSpacing: 16,
+          ),
+          itemBuilder: (BuildContext context, int index) {
+            return Column(
+              children: [
+                Container(
+                  height: 160,
+                  color: AppTheme.blue1,
+                ),
+                Text(
+                  'This is Shimmer Text',
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.center,
+                  style: AppTheme.body3(
+                    color: AppTheme.white,
+                  ),
+                ),
+              ],
+            );
+          },
         ),
-        itemBuilder: (BuildContext context, int index) {
-          return Container(
-            margin: const EdgeInsets.symmetric(horizontal: 20),
-            color: AppTheme.blue1,
-          );
-        },
       ),
     );
   }
