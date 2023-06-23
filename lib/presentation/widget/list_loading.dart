@@ -21,7 +21,7 @@ class ListLoading extends StatelessWidget {
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 3,
             mainAxisSpacing: 24,
-            mainAxisExtent: (MediaQuery.of(context).size.width - 32) / 3 * 1.6,
+            mainAxisExtent: (MediaQuery.of(context).size.width - 32) / 3 * 1.8,
             crossAxisSpacing: 16,
           ),
           itemBuilder: (BuildContext context, int index) {

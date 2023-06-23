@@ -42,14 +42,10 @@ dependencies:
   pretty_json: ^2.0.0
   dio: ^5.2.0
   equatable: ^2.0.5
-  geolocator: ^9.0.2
-  permission_handler: ^10.3.0
-  shared_preferences: ^2.1.2
   lottie: ^2.4.0
   shimmer: ^3.0.0
   intl: ^0.18.1
   awesome_dialog: ^3.1.0
-  http_mock_adapter: ^0.4.4
   animated_notch_bottom_bar: ^1.0.0
   cached_network_image: ^3.2.3
   sqflite: ^2.2.8+4

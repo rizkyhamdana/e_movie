@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:e_movie/config/route/app_route.gr.dart';
 import 'package:e_movie/config/services/injection.dart';
 import 'package:e_movie/config/util/app_theme.dart';
 import 'package:e_movie/config/util/constant.dart';
@@ -152,6 +153,7 @@ class _TvShowPageState extends State<TvShowPage>
 
   Widget bodyView() {
     return SingleChildScrollView(
+      physics: const BouncingScrollPhysics(),
       padding: const EdgeInsets.only(bottom: 80),
       child: Column(
         children: [
@@ -318,44 +320,50 @@ class _TvShowPageState extends State<TvShowPage>
         itemCount: 5,
         padding: const EdgeInsets.only(left: 24, right: 24),
         itemBuilder: (BuildContext context, int index) {
-          return SizedBox(
-            width: (MediaQuery.of(context).size.width - 48) / 3,
-            child: Stack(
-              children: [
-                Positioned(
-                    top: 0,
-                    right: 0,
-                    child: SizedBox(
-                      width: (MediaQuery.of(context).size.width - 48) / 3,
-                      height:
-                          (MediaQuery.of(context).size.width - 48) / 3 * 1.4,
-                      child: CachedNetworkImage(
-                        imageUrl:
-                            imageNetworkPaths(listTvShow![index].posterPath!),
-                        placeholder: (context, url) {
-                          return Shimmer.fromColors(
-                            baseColor: Colors.black12,
-                            highlightColor: AppTheme.white,
-                            child: Container(
-                              width:
-                                  (MediaQuery.of(context).size.width - 48) / 3,
-                              height: 180,
-                              color: AppTheme.blue1,
-                            ),
-                          );
-                        },
-                      ),
-                    )),
-                Positioned(
-                    left: 0,
-                    bottom: 0,
-                    child: StrokeText(
-                        text: '${index + 1}',
-                        strokeWidth: 2,
-                        textColor: AppTheme.bgColor,
-                        strokeColor: AppTheme.blue1,
-                        fontSize: 80)),
-              ],
+          return InkWell(
+            onTap: () {
+              context.router.push(TvShowDetailPage(tvShow: listTvShow[index]));
+            },
+            child: SizedBox(
+              width: (MediaQuery.of(context).size.width - 48) / 3,
+              child: Stack(
+                children: [
+                  Positioned(
+                      top: 0,
+                      right: 0,
+                      child: SizedBox(
+                        width: (MediaQuery.of(context).size.width - 48) / 3,
+                        height:
+                            (MediaQuery.of(context).size.width - 48) / 3 * 1.4,
+                        child: CachedNetworkImage(
+                          imageUrl:
+                              imageNetworkPaths(listTvShow![index].posterPath!),
+                          placeholder: (context, url) {
+                            return Shimmer.fromColors(
+                              baseColor: Colors.black12,
+                              highlightColor: AppTheme.white,
+                              child: Container(
+                                width:
+                                    (MediaQuery.of(context).size.width - 48) /
+                                        3,
+                                height: 180,
+                                color: AppTheme.blue1,
+                              ),
+                            );
+                          },
+                        ),
+                      )),
+                  Positioned(
+                      left: 0,
+                      bottom: 0,
+                      child: StrokeText(
+                          text: '${index + 1}',
+                          strokeWidth: 2,
+                          textColor: AppTheme.bgColor,
+                          strokeColor: AppTheme.blue1,
+                          fontSize: 80)),
+                ],
+              ),
             ),
           );
         },

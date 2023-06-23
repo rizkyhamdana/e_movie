@@ -158,6 +158,7 @@ class _MoviePageState extends State<MoviePage>
 
   Widget bodyView() {
     return SingleChildScrollView(
+      physics: const BouncingScrollPhysics(),
       padding: const EdgeInsets.only(bottom: 80),
       child: Column(
         children: [
@@ -257,6 +258,7 @@ class _MoviePageState extends State<MoviePage>
 
   Widget bodySearchView() {
     return SingleChildScrollView(
+      physics: const BouncingScrollPhysics(),
       padding: const EdgeInsets.only(bottom: 80),
       child: Column(
         children: [

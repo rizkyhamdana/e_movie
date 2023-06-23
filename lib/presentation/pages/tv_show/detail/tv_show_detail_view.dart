@@ -89,9 +89,8 @@ class _TvShowDetailPageState extends State<TvShowDetailPage>
             btnOkOnPress: () {
               cubit.getTvShowById(widget.tvShow.id!);
               if (widget.fromWatchList == true) {
-                context.router
-                    .replace(const HomePage())
-                    .then((value) => context.router.removeLast());
+                context.router.removeLast();
+                context.router.replace(const HomePage());
               }
             },
           ).show();

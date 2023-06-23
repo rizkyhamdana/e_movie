@@ -8,19 +8,21 @@ class EmptyDataView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        verticalSpacing(48),
-        Lottie.asset(
-          'assets/anim/anim_empty.json',
-          width: double.infinity,
-        ),
-        Text(
-          'No Data Found!',
-          style: AppTheme.subtitle3(color: AppTheme.white),
-        )
-      ],
+    return SingleChildScrollView(
+      physics: const NeverScrollableScrollPhysics(),
+      child: Column(
+        children: [
+          verticalSpacing(48),
+          Lottie.asset(
+            'assets/anim/anim_empty.json',
+            width: double.infinity,
+          ),
+          Text(
+            'No Data Found!',
+            style: AppTheme.subtitle3(color: AppTheme.white),
+          )
+        ],
+      ),
     );
   }
 }

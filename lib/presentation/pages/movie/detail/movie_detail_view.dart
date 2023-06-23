@@ -90,9 +90,7 @@ class _MovieDetailPageState extends State<MovieDetailPage>
             btnOkOnPress: () {
               cubit.getMovieById(widget.movie.id!);
               if (widget.fromWatchList == true) {
-                context.router
-                    .replace(const HomePage())
-                    .then((value) => context.router.removeLast());
+                context.router.replace(const HomePage());
               }
             },
           ).show();
