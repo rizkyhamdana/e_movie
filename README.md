@@ -79,6 +79,9 @@ flutter packages pub run build_runner watch
 [<img src="/readme/ss1.png" align="left"
 width="200"
     hspace="10" vspace="10">](/readme/ss1.png)
+[<img src="/readme/ss1.png" align="center"
+width="200"
+    hspace="10" vspace="10">](/readme/ss1.png)
     
 ### Main Feature List Movie/TV Show
 [<img src="/readme/ss2.png" align="left"
