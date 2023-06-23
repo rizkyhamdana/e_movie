@@ -66,6 +66,7 @@ abstract class $AppRouter extends _i8.RootStackRouter {
         child: _i6.MovieDetailPage(
           key: args.key,
           movie: args.movie,
+          fromWatchList: args.fromWatchList,
         ),
       );
     },
@@ -76,6 +77,7 @@ abstract class $AppRouter extends _i8.RootStackRouter {
         child: _i7.TvShowDetailPage(
           key: args.key,
           tvShow: args.tvShow,
+          fromWatchList: args.fromWatchList,
         ),
       );
     },
@@ -158,12 +160,14 @@ class MovieDetailPage extends _i8.PageRouteInfo<MovieDetailPageArgs> {
   MovieDetailPage({
     _i9.Key? key,
     required _i10.Movie movie,
+    bool fromWatchList = false,
     List<_i8.PageRouteInfo>? children,
   }) : super(
           MovieDetailPage.name,
           args: MovieDetailPageArgs(
             key: key,
             movie: movie,
+            fromWatchList: fromWatchList,
           ),
           initialChildren: children,
         );
@@ -178,15 +182,18 @@ class MovieDetailPageArgs {
   const MovieDetailPageArgs({
     this.key,
     required this.movie,
+    this.fromWatchList = false,
   });
 
   final _i9.Key? key;
 
   final _i10.Movie movie;
 
+  final bool fromWatchList;
+
   @override
   String toString() {
-    return 'MovieDetailPageArgs{key: $key, movie: $movie}';
+    return 'MovieDetailPageArgs{key: $key, movie: $movie, fromWatchList: $fromWatchList}';
   }
 }
 
@@ -196,12 +203,14 @@ class TvShowDetailPage extends _i8.PageRouteInfo<TvShowDetailPageArgs> {
   TvShowDetailPage({
     _i9.Key? key,
     required _i11.TvShow tvShow,
+    bool fromWatchList = false,
     List<_i8.PageRouteInfo>? children,
   }) : super(
           TvShowDetailPage.name,
           args: TvShowDetailPageArgs(
             key: key,
             tvShow: tvShow,
+            fromWatchList: fromWatchList,
           ),
           initialChildren: children,
         );
@@ -216,14 +225,17 @@ class TvShowDetailPageArgs {
   const TvShowDetailPageArgs({
     this.key,
     required this.tvShow,
+    this.fromWatchList = false,
   });
 
   final _i9.Key? key;
 
   final _i11.TvShow tvShow;
 
+  final bool fromWatchList;
+
   @override
   String toString() {
-    return 'TvShowDetailPageArgs{key: $key, tvShow: $tvShow}';
+    return 'TvShowDetailPageArgs{key: $key, tvShow: $tvShow, fromWatchList: $fromWatchList}';
   }
 }

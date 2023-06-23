@@ -9,8 +9,10 @@ import 'package:e_movie/data/model/tv_show.dart';
 import 'package:e_movie/presentation/pages/tv_show/tv_show_cubit.dart';
 import 'package:e_movie/presentation/pages/tv_show/tv_show_state.dart';
 import 'package:e_movie/presentation/widget/empty_data.dart';
+import 'package:e_movie/presentation/widget/list_loading.dart';
 import 'package:e_movie/presentation/widget/spacing.dart';
 import 'package:e_movie/presentation/widget/stroke_text.dart';
+import 'package:e_movie/presentation/widget/tv_show_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shimmer/shimmer.dart';
@@ -190,7 +192,7 @@ class _TvShowPageState extends State<TvShowPage>
               unselectedLabelColor: AppTheme.blackColor2,
               dividerColor: Colors.transparent,
               indicatorColor: AppTheme.white,
-              padding: const EdgeInsets.symmetric(horizontal: 24),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               controller: _tabController,
               onTap: (value) {
                 switch (value) {
@@ -225,9 +227,9 @@ class _TvShowPageState extends State<TvShowPage>
               builder: (context, state) {
                 debugPrint('State Sekarang: $state');
                 if (state is ListTvShowLoaded) {
-                  return listTvShowLoaded(state.tvShowResponse.results);
+                  return TvShowList(listTvShow: state.tvShowResponse.results!);
                 } else {
-                  return listTvShowLoading();
+                  return const ListLoading();
                 }
               },
             ),
@@ -249,7 +251,7 @@ class _TvShowPageState extends State<TvShowPage>
               builder: (context, state) {
                 debugPrint('State Sekarang: $state');
                 if (state is TvShowSearchLoaded) {
-                  return listTvShowLoaded(state.tvShowResponse.results);
+                  return TvShowList(listTvShow: state.tvShowResponse.results!);
                 } else if (state is TvShowSearchEmpty) {
                   return const EmptyDataView();
                 } else if (state is TvShowSearchError) {
@@ -260,9 +262,9 @@ class _TvShowPageState extends State<TvShowPage>
                     title: 'Error',
                     desc: state.error,
                   ).show();
-                  return listTvShowLoading();
+                  return const ListLoading();
                 } else {
-                  return listTvShowLoading();
+                  return const ListLoading();
                 }
               },
             ),
@@ -357,105 +359,6 @@ class _TvShowPageState extends State<TvShowPage>
             ),
           );
         },
-      ),
-    );
-  }
-
-  Widget listTvShowLoaded(List<TvShow>? listTvShow) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24),
-      child: GridView.builder(
-        physics: const NeverScrollableScrollPhysics(),
-        shrinkWrap: true,
-        itemCount: listTvShow!.length,
-        padding: EdgeInsets.zero,
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          mainAxisExtent: (MediaQuery.of(context).size.width - 32) / 3 * 1.6,
-          crossAxisCount: 3,
-          mainAxisSpacing: 24.0,
-          crossAxisSpacing: 16,
-        ),
-        itemBuilder: (BuildContext context, int index) {
-          return Column(
-            children: [
-              CachedNetworkImage(
-                imageUrl: imageNetworkPaths(listTvShow[index].posterPath ?? ''),
-                fit: BoxFit.fitWidth,
-                errorWidget: (context, url, error) {
-                  return Container(
-                    height: 160,
-                    decoration: BoxDecoration(
-                        image: DecorationImage(
-                            image:
-                                AssetImage(imagePaths('movie_placeholder')))),
-                  );
-                },
-                placeholder: (context, url) {
-                  return Shimmer.fromColors(
-                    baseColor: Colors.black12,
-                    highlightColor: AppTheme.white,
-                    child: Container(
-                      width: 160,
-                      color: AppTheme.blue1,
-                    ),
-                  );
-                },
-              ),
-              verticalSpacing(4),
-              Text(
-                listTvShow[index].name!,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                textAlign: TextAlign.center,
-                style: AppTheme.body3(
-                  color: AppTheme.white,
-                ),
-              ),
-            ],
-          );
-        },
-      ),
-    );
-  }
-
-  Widget listTvShowLoading() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24),
-      child: Shimmer.fromColors(
-        baseColor: Colors.black12,
-        highlightColor: AppTheme.white,
-        child: GridView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          padding: EdgeInsets.zero,
-          itemCount: 9,
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 3,
-            mainAxisSpacing: 24,
-            mainAxisExtent: (MediaQuery.of(context).size.width - 32) / 3 * 1.6,
-            crossAxisSpacing: 16,
-          ),
-          itemBuilder: (BuildContext context, int index) {
-            return Column(
-              children: [
-                Container(
-                  height: 160,
-                  color: AppTheme.blue1,
-                ),
-                verticalSpacing(4),
-                Text(
-                  'This is Shimmer Text',
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.center,
-                  style: AppTheme.body3(
-                    color: AppTheme.white,
-                  ),
-                ),
-              ],
-            );
-          },
-        ),
       ),
     );
   }

@@ -7,7 +7,7 @@ abstract class AppRepository {
   Future<List<Movie>> getMovieWatchlist();
   Future<TvShowResponse> getListTvShow(String type);
   Future<TvShowResponse> getListSearchTvShow(String query);
-  Future<List<TvShow>> getTvShowWatchList(String query);
+  Future<List<TvShow>> getTvShowWatchList();
 
   Future<void> insertMovie(Movie movie);
   Future<bool> getMovieById(int id);

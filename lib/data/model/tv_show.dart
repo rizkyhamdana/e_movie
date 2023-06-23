@@ -88,6 +88,7 @@ class TvShow {
         name: json["name"],
         originalName: json["original_name"],
         backdropPath: json["backdrop_path"],
+        overview: json["overview"],
         posterPath: json["poster_path"],
         firstAirDate: json["first_air_date"],
       );
@@ -96,6 +97,7 @@ class TvShow {
         "id": id,
         "name": name,
         "original_name": originalName,
+        "overview": overview,
         "backdrop_path": backdropPath,
         "poster_path": posterPath,
         "first_air_date": firstAirDate,

@@ -122,7 +122,7 @@ class AppRepositoryImpl implements AppRepository {
   }
 
   @override
-  Future<List<TvShow>> getTvShowWatchList(String query) async {
+  Future<List<TvShow>> getTvShowWatchList() async {
     try {
       var listTvShow = await AppDatabase.instance.queryAllTvShow();
       return listTvShow;
@@ -134,8 +134,7 @@ class AppRepositoryImpl implements AppRepository {
   @override
   Future<void> insertMovie(Movie movie) async {
     try {
-      var result = AppDatabase.instance.insertMovie(movie.toDb());
-      print('RESULTNYAAA: $result');
+      AppDatabase.instance.insertMovie(movie.toDb());
     } on DioException catch (e) {
       throw Exception(Utility.handleError(e));
     }

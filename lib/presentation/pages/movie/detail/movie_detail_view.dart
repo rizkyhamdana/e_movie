@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:e_movie/config/route/app_route.gr.dart';
 import 'package:e_movie/config/services/injection.dart';
 import 'package:e_movie/config/util/app_theme.dart';
 import 'package:e_movie/config/util/custom_widget.dart';
@@ -16,8 +17,10 @@ import 'package:shimmer/shimmer.dart';
 
 @RoutePage()
 class MovieDetailPage extends StatefulWidget {
-  const MovieDetailPage({super.key, required this.movie});
+  const MovieDetailPage(
+      {super.key, required this.movie, this.fromWatchList = false});
   final Movie movie;
+  final bool fromWatchList;
 
   @override
   State<MovieDetailPage> createState() => _MovieDetailPageState();
@@ -42,7 +45,6 @@ class _MovieDetailPageState extends State<MovieDetailPage>
     return BlocListener<MovieDetailCubit, MovieDetailState>(
       bloc: cubit,
       listener: (context, state) {
-        print('State Sekarang: $state');
         if (state is MovieIsWatchList) {
           setState(() {
             isWatchList = true;
@@ -87,6 +89,11 @@ class _MovieDetailPageState extends State<MovieDetailPage>
             btnOkText: 'Ok',
             btnOkOnPress: () {
               cubit.getMovieById(widget.movie.id!);
+              if (widget.fromWatchList == true) {
+                context.router
+                    .replace(const HomePage())
+                    .then((value) => context.router.removeLast());
+              }
             },
           ).show();
         } else if (state is MovieError) {

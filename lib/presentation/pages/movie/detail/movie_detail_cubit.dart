@@ -1,5 +1,4 @@
 import 'package:e_movie/config/services/injection.dart';
-import 'package:e_movie/config/util/constant.dart';
 import 'package:e_movie/config/util/utility.dart';
 import 'package:e_movie/data/model/movie.dart';
 import 'package:e_movie/domain/repository/app_repository.dart';

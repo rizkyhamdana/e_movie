@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:e_movie/config/helper/database_helper.dart';
+import 'package:e_movie/config/util/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:e_movie/config/util/app_config.dart';
@@ -45,7 +46,7 @@ class _MyAppState extends State<MyApp> {
       ),
       title: 'Flutter Demo',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: AppTheme.blue1),
         useMaterial3: true,
       ),
     );

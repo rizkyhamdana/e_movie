@@ -6,6 +6,8 @@ import 'package:e_movie/config/util/custom_widget.dart';
 import 'package:e_movie/data/model/movie.dart';
 import 'package:e_movie/presentation/pages/movie/movie_state.dart';
 import 'package:e_movie/presentation/widget/empty_data.dart';
+import 'package:e_movie/presentation/widget/list_loading.dart';
+import 'package:e_movie/presentation/widget/movie_list.dart';
 import 'package:e_movie/presentation/widget/stroke_text.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shimmer/shimmer.dart';
@@ -238,9 +240,11 @@ class _MoviePageState extends State<MoviePage>
               builder: (context, state) {
                 debugPrint('State Sekarang: $state');
                 if (state is ListMovieLoaded) {
-                  return listMovieLoaded(state.movieResponse.results);
+                  return MovieList(
+                    listMovie: state.movieResponse.results!,
+                  );
                 } else {
-                  return listMovieLoading();
+                  return const ListLoading();
                 }
               },
             ),
@@ -262,7 +266,7 @@ class _MoviePageState extends State<MoviePage>
               builder: (context, state) {
                 debugPrint('State Sekarang: $state');
                 if (state is MovieSearchLoaded) {
-                  return listMovieLoaded(state.movieResponse.results);
+                  return MovieList(listMovie: state.movieResponse.results!);
                 } else if (state is MovieSearchEmpty) {
                   return const EmptyDataView();
                 } else if (state is MovieSearchError) {
@@ -273,9 +277,9 @@ class _MoviePageState extends State<MoviePage>
                     title: 'Error',
                     desc: state.error,
                   ).show();
-                  return listMovieLoading();
+                  return const ListLoading();
                 } else {
-                  return listMovieLoading();
+                  return const ListLoading();
                 }
               },
             ),
@@ -385,105 +389,6 @@ class _MoviePageState extends State<MoviePage>
             ),
           );
         },
-      ),
-    );
-  }
-
-  Widget listMovieLoaded(List<Movie>? listMovie) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: GridView.builder(
-        physics: const NeverScrollableScrollPhysics(),
-        shrinkWrap: true,
-        itemCount: listMovie!.length,
-        padding: EdgeInsets.zero,
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          mainAxisExtent: (MediaQuery.of(context).size.width - 32) / 3 * 1.6,
-          crossAxisCount: 3,
-          mainAxisSpacing: 24.0,
-          crossAxisSpacing: 16,
-        ),
-        itemBuilder: (BuildContext context, int index) {
-          return Column(
-            children: [
-              CachedNetworkImage(
-                imageUrl: imageNetworkPaths(listMovie[index].posterPath ?? ''),
-                fit: BoxFit.fitWidth,
-                errorWidget: (context, url, error) {
-                  return Container(
-                    height: 160,
-                    decoration: BoxDecoration(
-                        image: DecorationImage(
-                            image:
-                                AssetImage(imagePaths('movie_placeholder')))),
-                  );
-                },
-                placeholder: (context, url) {
-                  return Shimmer.fromColors(
-                    baseColor: Colors.black12,
-                    highlightColor: AppTheme.white,
-                    child: Container(
-                      height: 160,
-                      color: AppTheme.blue1,
-                    ),
-                  );
-                },
-              ),
-              verticalSpacing(4),
-              Text(
-                listMovie[index].title!,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                textAlign: TextAlign.center,
-                style: AppTheme.body3(
-                  color: AppTheme.white,
-                ),
-              ),
-            ],
-          );
-        },
-      ),
-    );
-  }
-
-  Widget listMovieLoading() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24.0),
-      child: Shimmer.fromColors(
-        baseColor: Colors.black12,
-        highlightColor: AppTheme.white,
-        child: GridView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          padding: EdgeInsets.zero,
-          itemCount: 9,
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 3,
-            mainAxisSpacing: 24,
-            mainAxisExtent: (MediaQuery.of(context).size.width - 32) / 3 * 1.6,
-            crossAxisSpacing: 16,
-          ),
-          itemBuilder: (BuildContext context, int index) {
-            return Column(
-              children: [
-                Container(
-                  height: 160,
-                  color: AppTheme.blue1,
-                ),
-                verticalSpacing(4),
-                Text(
-                  'This is Shimmer Text',
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.center,
-                  style: AppTheme.body3(
-                    color: AppTheme.white,
-                  ),
-                ),
-              ],
-            );
-          },
-        ),
       ),
     );
   }

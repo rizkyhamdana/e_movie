@@ -14,10 +14,9 @@ class WatchListInitial extends WatchListState {}
 
 class WatchListMovieLoading extends WatchListState {}
 
-class MovieLoaded extends WatchListState {
-  final MovieResponse movieResponse;
-  const MovieLoaded({required this.movieResponse});
-}
+class WatchListMovieEmpty extends WatchListState {}
+
+class WatchListTvShowEmpty extends WatchListState {}
 
 class WatchListMovieLoaded extends WatchListState {
   final List<Movie> listMovie;
@@ -30,11 +29,6 @@ class WatchListMovieError extends WatchListState {
 }
 
 class WatchListTvShowLoading extends WatchListState {}
-
-class TvShowLoaded extends WatchListState {
-  final List<TvShow> listTvShow;
-  const TvShowLoaded({required this.listTvShow});
-}
 
 class WatchListTvShowLoaded extends WatchListState {
   final List<TvShow> listTvShow;
