@@ -78,9 +78,10 @@ flutter packages pub run build_runner watch
 ### Splash Screen
 [<img src="/readme/ss1.png" align="left"
 width="200"
-    hspace="100" vspace="10">](/readme/ss1.png)
+    hspace="10" vspace="10">](/readme/ss1.png)
+    
 ### Main Feature List Movie/TV Show
-[<img src="/readme/ss2.png" align="Left"
+[<img src="/readme/ss2.png" align="left"
 width="200"
     hspace="10" vspace="10">](/readme/ss2.png)
 [<img src="/readme/ss3.png" align="center"
