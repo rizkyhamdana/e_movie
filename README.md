@@ -78,8 +78,7 @@ flutter packages pub run build_runner watch
 ### Splash Screen
 [<img src="/readme/ss1.png" align="left"
 width="200"
-    hspace="10" vspace="10">](/readme/ss1.png)
- <br />
+    hspace="100" vspace="10">](/readme/ss1.png)
 ### Main Feature List Movie/TV Show
 [<img src="/readme/ss2.png" align="Left"
 width="200"
@@ -141,6 +140,5 @@ width="200"
 
 ## Permissions
 
-permissions:
 - Full Network Access.
 - View Network Connections.
